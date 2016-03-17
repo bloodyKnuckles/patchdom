@@ -1,5 +1,6 @@
 var patch = require('virtual-dom/patch')
 var virtualize = require('vdom-virtualize')
+var work = require('webworkify')
 
 var rootnode = document.getElementsByTagName('html')[0]
 var sitedom = virtualize(rootnode)
@@ -15,10 +16,18 @@ window.addEventListener('popstate', function () {
   worker.postMessage({'url': location.pathname})
 })
 
-document.querySelector('button').onclick = function () {
-  state.clicks += 1
-  render()
+document.querySelector('button').onclick = function (evt) {
+  //state.clicks += 1
+  //render()
+  evt.preventDefault()
+  worker.postMessage({'clicks': 1})
 }
+
+var worker = work(require('./worker.js'))
+worker.addEventListener('message', function (evt) {
+  console.log(evt.data)
+  paint(evt.data)
+})
 
 function paint (data) {
   window.requestAnimationFrame(function () {
@@ -29,6 +38,7 @@ function paint (data) {
   }
 }
 
+/*
 var fs = require('fs')
 var diff = require('virtual-dom/diff')
 var shaved = require('shave-template')
@@ -69,4 +79,4 @@ function app (state) {
   }
   return shaved(tdom, pagevars)
 }
-
+//*/
