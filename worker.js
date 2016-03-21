@@ -2,7 +2,8 @@ var fs = require('fs')
 var diff = require('virtual-dom/diff')
 var shaved = require('shave-template')
 var editObj = require('edit-object')
-var serialize = require('vdom-serialized-patch/serialize')
+var serializePatch = require('vdom-serialized-patch/serialize')
+var fromJSON = require('vdom-as-json/fromJson')
 
 module.exports = function (self) {
 
@@ -12,6 +13,7 @@ module.exports = function (self) {
   var other = shaved(fs.readFileSync('./other.html', 'utf8'))
 
   var newdom = site
+  //var sitedom = newdom
 
   self.onmessage = function (msg) {
     editObj(state, msg.data)
@@ -20,9 +22,10 @@ module.exports = function (self) {
 
   function render () {
     newdom = app(state)
-    var patches = diff(sitedom, newdom)
-    sitedom = newdom
-    self.postMessage({'url': state.url, 'patches': serialize(patches)})
+    var patches = diff(fromJSON(state.sitedom), newdom)
+    //var patches = diff(sitedom, newdom)
+    state.sitedom = newdom
+    self.postMessage({'url': state.url, 'patches': serializePatch(patches)})
   }
 
   function app (state) {
