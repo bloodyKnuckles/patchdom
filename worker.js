@@ -2,49 +2,60 @@ var fs = require('fs')
 var diff = require('virtual-dom/diff')
 var shaved = require('shave-template')
 var editObj = require('edit-object')
-var serializePatch = require('vdom-serialized-patch/serialize')
+var toJSON = require('vdom-as-json/toJson')
 var fromJSON = require('vdom-as-json/fromJson')
+var htmlToVDOM = require('to-virtual-dom')
 
-module.exports = function (self) {
+var state = { 'clicks': 0, 'url': '/' }
 
-  var state = { 'clicks': 0, 'url': '/site.html' }
+var site  = htmlToVDOM(fs.readFileSync('./index.html', 'utf8')) // html string to vdom
+//var other = htmlToVDOM(fs.readFileSync('./other.html', 'utf8'))
 
-  var site  = shaved(fs.readFileSync('./site.html', 'utf8')) // html string to vdom
-  var other = shaved(fs.readFileSync('./other.html', 'utf8'))
+var sitedom = site, newdom = site
 
-  var newdom = site
-  //var sitedom = newdom
-
-  self.onmessage = function (msg) {
-    editObj(state, msg.data)
-    render()
+self.addEventListener('message', function (evt) {
+  var data = evt.data
+  switch ( data.cmd ) {
+    case 'echo': self.postMessage({cmd: 'echo', msg: data}); break
+    case 'init':
+      sitedom = fromJSON(data.sitedom);
+      console.log('init worker')
+      break
+    case 'inc':
+      state.clicks += 1
+      render()
+      break
   }
+}, false)
 
-  function render () {
-    newdom = app(state)
-    var patches = diff(fromJSON(state.sitedom), newdom)
-    //var patches = diff(sitedom, newdom)
-    state.sitedom = newdom
-    self.postMessage({'url': state.url, 'patches': serializePatch(patches)})
-  }
 
-  function app (state) {
-    var tdom, pagevars = {}
-    if ( '/site.html' === state.url ) {
-      tdom = site
-      pagevars = {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
-      function onclick () {
-        state.clicks += 1
-        render()
-      }
+function render () {
+  newdom = app(state)
+  var patches = diff(sitedom, newdom)
+  sitedom = newdom
+  self.postMessage({cmd: 'paint', patches: toJSON(patches)})
+}
+
+function app (state) {
+  var tdom, pagevars = {}
+  if (
+    '/' === state.url
+    || '/index.html' === state.url
+  ) {
+    tdom = site
+    pagevars = {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
+    function onclick (evt) {
+      console.log('clicked')
+      evt.preventDefault()
+      window.worker.postMessage({cmd: 'inc'})
     }
-    else if ( '/other.html' === state.url ) {
-      tdom = other
-      pagevars = {'title': 'hey', '#msg': 'there you go'}
-    }
-    else { // home
-      pagevars = {'title': 'home', '#msg': 'home sweet home'}
-    }
-    return shaved(tdom, pagevars)
   }
+  else if ( '/other.html' === state.url ) {
+    tdom = other
+    pagevars = {'title': 'hey', '#msg': 'there you go'}
+  }
+  else { // home
+    pagevars = {'title': 'home', '#msg': 'home sweet home'}
+  }
+  return shaved(tdom, pagevars)
 }

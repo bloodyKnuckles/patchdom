@@ -1,1 +1,0 @@
-browserify -t brfs testworker.js > testworkerb.js

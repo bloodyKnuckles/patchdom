@@ -1,5 +1,0 @@
-vdom-as-json
-  lib/toJson
-  lib/fromJson
-shave-template
-  to-virtual-dom
