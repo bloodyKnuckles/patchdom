@@ -8,11 +8,11 @@
 6. npm i https://github.com/bloodyKnuckles/to-virtual-dom.git
 
 ### run
-7. browserify -t brfs testworker.js > testworkerb.js
+7. browserify -t brfs worker.js > workerb.js
 8. wzrd index.js:bundle.js
 
 ### features
 * Standalone, plain HTML files as templates
 * Curly-brackets-free data binding
-* Offloading template/data compilation and VDOM diffing to *web worker*
+* Offloading template/data compilation and VDOM diffing to **web worker**
 
