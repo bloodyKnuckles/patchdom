@@ -14,5 +14,5 @@
 ### features
 * Standalone, plain HTML files as templates
 * Curly-brackets-free data binding
-* Offloading template/data compilation and VDOM diffing to **web worker**
+* Offloading template/data compilation and VDOM diffing to **Web Worker**
 
