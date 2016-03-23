@@ -1,12 +1,12 @@
 var fs = require('fs')
 var diff = require('virtual-dom/diff')
-//var shaved = require('shave-template')
+var shaved = require('shave-template')
 var editObj = require('edit-object')
 //var serializePatch = require('vdom-serialized-patch/serialize')
 var toJSON = require('vdom-as-json/toJson')
 var fromJSON = require('vdom-as-json/fromJson')
 var htmlToVDOM = require('to-virtual-dom')
-var vdomToHTML = require('vdom-to-html')
+//var vdomToHTML = require('vdom-to-html')
 
 //module.exports = function (self) {
 
@@ -36,8 +36,10 @@ var vdomToHTML = require('vdom-to-html')
   function render () {
     newdom = app(state)
     var patches = diff(sitedom, newdom)
-    sitedom = htmlToVDOM(vdomToHTML(newdom)) // copy
+    //sitedom = htmlToVDOM(vdomToHTML(newdom)) // copy
+    sitedom = newdom
     self.postMessage({cmd: 'paint', patches: toJSON(patches)})
+    //self.postMessage({cmd: 'paint', patches: serializePatch(patches)})
   }
 
   function app (state) {
@@ -60,12 +62,12 @@ var vdomToHTML = require('vdom-to-html')
     }
     return shaved(tdom, pagevars)
   }
-
+/*
   function shaved (vdom, pagevars) {
     vdom.children[0].children[1].children[0].text = 'hey there'
     vdom.children[2].children[1].children[1].children[0].text = state.clicks
     return vdom
-  }
+  } //*/
 
 //}
 
