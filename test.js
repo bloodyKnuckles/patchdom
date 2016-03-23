@@ -13,27 +13,28 @@ document.body.addEventListener('click', function (evt) {
 })
 
 window.addEventListener('popstate', function () {
-  //worker.postMessage({'url': location.pathname})
+  //window.worker.postMessage({'url': location.pathname})
 })
 
 document.querySelector('button').onclick = (function onclick(evt) {
   console.log('clicked')
   evt.preventDefault()
-  worker.postMessage({cmd: 'inc'})
+  window.worker.postMessage({cmd: 'inc'})
 })
 
 var rootnode = document.documentElement
 var sitedom = virtualize(rootnode)
 
-var worker = new Worker('testworkerb.js')
-worker.addEventListener('message', function (evt) {
+window.worker = new Worker('testworkerb.js') // local scope issues
+window.worker.addEventListener('message', function (evt) {
   var data = evt.data
+console.log(data.patches)
   switch ( data.cmd ) {
     case 'echo': console.log(data.msg, state); break
     case 'paint': paint(fromJSON(data.patches)); break
   }
 }, false)
-worker.postMessage({cmd: 'init', sitedom: toJSON(sitedom)})
+window.worker.postMessage({cmd: 'init', sitedom: toJSON(sitedom)})
 
 console.log('init main')
 

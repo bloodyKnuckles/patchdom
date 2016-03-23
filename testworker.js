@@ -50,7 +50,7 @@ var htmlToVDOM = require('to-virtual-dom')
       function onclick (evt) {
         console.log('clicked')
         evt.preventDefault()
-        worker.postMessage({cmd: 'inc'})
+        window.worker.postMessage({cmd: 'inc'})
       }
     }
     else if ( '/other.html' === state.url ) {
