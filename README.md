@@ -1,5 +1,7 @@
 # patchdom
 
+Testing out Virtual-DOM and Web Worker technologies.
+
 ### install
 1. `npm i wzrd -g`
 2. `git clone https://github.com/bloodyKnuckles/patchdom.git && cd patchdom`
@@ -20,3 +22,8 @@
 ### demo
 
 [http://bloodyknuckles.neocities.org/patchdom/](http://bloodyknuckles.neocities.org/patchdom/)
+
+### development notes
+
+* Functions don't easily pass the Web Worker thread barrior. The response here is to `toString` the function and `eval` it on the other end.
+* Scope is an issue when updating a function in the DOM. Apparently the newly updated function doesn't fall under the same scope the initial function had. The response here is to put what goes out of scope under the `window` scope.
