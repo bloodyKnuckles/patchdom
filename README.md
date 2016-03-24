@@ -3,7 +3,7 @@
 ### install
 1. `npm i wzrd -g`
 2. `git clone https://github.com/bloodyKnuckles/patchdom.git && cd patchdom`
-3. `npm i virtual-dom vdom-as-json vdom-parser shave-template edit-object brfs`
+3. `npm i virtual-dom vdom-as-json vdom-parser shave-template brfs`
 5. `npm i https://github.com/bloodyKnuckles/vdom-as-json.git`
 6. `npm i https://github.com/bloodyKnuckles/to-virtual-dom.git`
 
