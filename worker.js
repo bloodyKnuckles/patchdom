@@ -22,14 +22,13 @@ self.addEventListener('message', function (evt) {
       break
     case 'inc':
       state.clicks += 1
-      render()
+      render(app(state))
       break
   }
 }, false)
 
 
-function render () {
-  newdom = app(state)
+function render (newdom) {
   var patches = diff(sitedom, newdom)
   sitedom = newdom
   self.postMessage({cmd: 'paint', patches: toJSON(patches)})
