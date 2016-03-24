@@ -1,7 +1,6 @@
 var fs = require('fs')
 var diff = require('virtual-dom/diff')
 var shaved = require('shave-template')
-var editObj = require('edit-object')
 var toJSON = require('vdom-as-json/toJson')
 var fromJSON = require('vdom-as-json/fromJson')
 var htmlToVDOM = require('to-virtual-dom')
