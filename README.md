@@ -25,5 +25,9 @@ Testing out Virtual-DOM and Web Worker technologies.
 
 ### development notes
 
-* Functions don't easily pass the Web Worker thread barrior. The response here is to `toString` the function and `eval` it on the other end.
+* Functions don't pass the Web Worker thread barrior. The response here is to `toString` the function and `eval` it on the other end.
 * Scope is an issue when updating a function in the DOM. Apparently the newly updated function doesn't fall under the same scope the initial function had. The response here is to put what goes out of scope under the `window` scope.
+
+### license
+
+MIT
