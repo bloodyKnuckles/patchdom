@@ -10,7 +10,7 @@ var state = { 'clicks': 0, 'url': '/' }
 var site  = htmlToVDOM(fs.readFileSync('./index.html', 'utf8')) // html string to vdom
 //var other = htmlToVDOM(fs.readFileSync('./other.html', 'utf8'))
 
-var sitedom = site, newdom = site
+var sitedom = site
 
 self.addEventListener('message', function (evt) {
   var data = evt.data
