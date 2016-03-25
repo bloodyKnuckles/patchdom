@@ -1,3 +1,0 @@
-wzrd index.js:bundle.js
-wzrd index.js:bundle.js -- -t brfs
-

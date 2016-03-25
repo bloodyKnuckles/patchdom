@@ -1,26 +1,48 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-module.exports = function editObj (targetObject, obj) {
-  Object.keys(obj).forEach(function (key) {
-    if ( undefined === obj[key] || null === obj[key] ) {
-      delete targetObject[key]
+
+var htmlToVDOM = require('to-virtual-dom')
+
+var state = { 'clicks': 0, 'url': '/' }
+
+var site  = htmlToVDOM("<!DOCTYPE html>\n<html>\n  <head>\n    <title>patchdom</title>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"/site.css\">\n  </head>\n  <body>\n    <h2>Hello <span id=\"count\">0</span></h2>\n    <div class=\"template\">\n      <button>click</button>\n    </div>\n    <script src=\"/bundle.js\"></script>\n  </body>\n</html>\n") // html string to vdom
+//var other = htmlToVDOM(fs.readFileSync('./other.html', 'utf8'))
+
+module.exports = function (data) {
+  var vdom, content = {}
+
+  if ( 'url' === data.cmd ) {
+    state.url = data.url
+  }
+
+  if ( '/' === state.url
+    || '/index.html' === state.url
+  ) {
+
+    if ( 'inc' ===  data.cmd ) {
+      state.clicks += 1
     }
-    else if (
-      'object' === typeof obj[key] && !Array.isArray(obj[key])
-    ) {
-      if (
-        !('object' === typeof targetObject[key] && !Array.isArray(targetObject[key]))
-      ) {
-        targetObject[key] = {}
-      }
-      editObj(targetObject[key], obj[key])
+    vdom = site
+    content = {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
+    function onclick (evt) {
+      console.log('clicked')
+      evt.preventDefault()
+      window.worker.postMessage({cmd: 'inc'})
     }
-    else {
-      targetObject[key] = obj[key]
-    }
-  })
+  }
+
+  else if ( '/other.html' === state.url ) {
+    vdom = other
+    content = {'title': 'hey', '#msg': 'there you go'}
+  }
+
+  else { // home
+    content = {'title': 'home', '#msg': 'home sweet home'}
+  }
+
+  return {vdom: vdom, content: content}
 }
 
-},{}],2:[function(require,module,exports){
+},{"to-virtual-dom":66}],2:[function(require,module,exports){
 var vText = require('virtual-dom/vnode/vtext')
 var vTSel = require('vtree-select')
 var vToHTML = require('vdom-to-html')
@@ -28,6 +50,12 @@ var toVDOM = require('to-virtual-dom')
 
 module.exports = function (templates, contentvars) {
   var vt
+  if ( 'object' === typeof templates && !Array.isArray(templates)
+    && undefined === contentvars
+  ) {
+    contentvars = templates[Object.keys(templates)[1]]
+    templates = templates[Object.keys(templates)[0]]
+  }
   contentvars = contentvars || {}
   if ( Array.isArray(templates) ) {
     if ( 1 < templates.length ) {
@@ -11152,20 +11180,14 @@ function hasOwnProperty(obj, prop) {
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./support/isBuffer":133,"_process":119,"inherits":115}],135:[function(require,module,exports){
-
 var diff = require('virtual-dom/diff')
 var shaved = require('shave-template')
-var editObj = require('edit-object')
 var toJSON = require('vdom-as-json/toJson')
 var fromJSON = require('vdom-as-json/fromJson')
-var htmlToVDOM = require('to-virtual-dom')
 
-var state = { 'clicks': 0, 'url': '/' }
+var app = require('./app')
 
-var site  = htmlToVDOM("<!DOCTYPE html>\n<html>\n  <head>\n    <title>curly-free</title>\n    <link rel=\"stylesheet\" type=\"text/css\" href=\"/site.css\">\n  </head>\n  <body>\n    <h2>Hello <span id=\"count\">0</span></h2>\n    <div class=\"template\">\n      <button>click</button>\n    </div>\n    <script src=\"/bundle.js\"></script>\n  </body>\n</html>\n") // html string to vdom
-//var other = htmlToVDOM(fs.readFileSync('./other.html', 'utf8'))
-
-var sitedom = site, newdom = site
+var sitedom
 
 self.addEventListener('message', function (evt) {
   var data = evt.data
@@ -11175,43 +11197,16 @@ self.addEventListener('message', function (evt) {
       sitedom = fromJSON(data.sitedom);
       console.log('init worker')
       break
-    case 'inc':
-      state.clicks += 1
-      render()
-      break
+    default:
+      render(shaved(app(data)))
   }
 }, false)
 
 
-function render () {
-  newdom = app(state)
+function render (newdom) {
   var patches = diff(sitedom, newdom)
   sitedom = newdom
   self.postMessage({cmd: 'paint', patches: toJSON(patches)})
 }
 
-function app (state) {
-  var tdom, pagevars = {}
-  if (
-    '/' === state.url
-    || '/index.html' === state.url
-  ) {
-    tdom = site
-    pagevars = {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
-    function onclick (evt) {
-      console.log('clicked')
-      evt.preventDefault()
-      window.worker.postMessage({cmd: 'inc'})
-    }
-  }
-  else if ( '/other.html' === state.url ) {
-    tdom = other
-    pagevars = {'title': 'hey', '#msg': 'there you go'}
-  }
-  else { // home
-    pagevars = {'title': 'home', '#msg': 'home sweet home'}
-  }
-  return shaved(tdom, pagevars)
-}
-
-},{"edit-object":1,"shave-template":2,"to-virtual-dom":66,"vdom-as-json/fromJson":67,"vdom-as-json/toJson":71,"virtual-dom/diff":84}]},{},[135]);
+},{"./app":1,"shave-template":2,"vdom-as-json/fromJson":67,"vdom-as-json/toJson":71,"virtual-dom/diff":84}]},{},[135]);

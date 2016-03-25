@@ -6,12 +6,12 @@ var vdomparser = require('vdom-parser')
 document.body.addEventListener('click', function (evt) {
   if ( 'A' === evt.target.tagName && evt.target.host === window.location.host ) {
     evt.preventDefault()
-    //render()
+    //window.worker.postMessage({cmd: 'url', url: location.pathname})
   }
 })
 
 window.addEventListener('popstate', function () {
-  //window.worker.postMessage({'url': location.pathname})
+  //window.worker.postMessage({cmd: 'url', url: location.pathname})
 })
 
 document.querySelector('button').onclick = (function onclick(evt) {
@@ -27,7 +27,7 @@ window.worker = new Worker('workerb.js') // local scope issues
 window.worker.addEventListener('message', function (evt) {
   var data = evt.data
   switch ( data.cmd ) {
-    case 'echo': console.log(data.msg, state); break
+    case 'echo': console.log(data.msg); break
     case 'paint': paint(fromJSON(data.patches)); break
   }
 }, false)
