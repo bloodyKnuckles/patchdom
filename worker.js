@@ -8,7 +8,7 @@ var app = require('./app')
 var sitedom
 
 self.addEventListener('message', function (evt) {
-  var data = evt.data
+  var data = evt.data, newdom
   switch ( data.cmd ) {
     case 'echo': self.postMessage({cmd: 'echo', msg: data}); break
     case 'init':
@@ -16,13 +16,8 @@ self.addEventListener('message', function (evt) {
       console.log('init worker')
       break
     default:
-      render(shaved(app(data)))
+      newdom = shaved(app(data))
+      self.postMessage({cmd: 'paint', patches: toJSON(diff(sitedom, newdom))})
+      sitedom = newdom
   }
 }, false)
-
-
-function render (newdom) {
-  var patches = diff(sitedom, newdom)
-  sitedom = newdom
-  self.postMessage({cmd: 'paint', patches: toJSON(patches)})
-}
