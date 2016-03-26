@@ -14,7 +14,7 @@ window.addEventListener('popstate', function () {
   //window.worker.postMessage({cmd: 'url', url: location.pathname})
 })
 
-document.querySelector('button').onclick = (function onclick(evt) {
+document.querySelector('button').onclick = (function onclick (evt) {
   console.log('clicked')
   evt.preventDefault()
   window.worker.postMessage({cmd: 'inc'})
