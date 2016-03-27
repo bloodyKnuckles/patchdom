@@ -5,7 +5,7 @@ Testing Virtual-DOM and Web Worker technologies.
 ### install
 1. `npm i wzrd -g`
 2. `git clone https://github.com/bloodyKnuckles/patchdom.git && cd patchdom`
-3. `npm i virtual-dom vdom-parser shave-template`
+3. `npm i vdom-parser shave-template`
 4. `npm i https://github.com/bloodyKnuckles/virtual-dom.git`
 5. `npm i https://github.com/bloodyKnuckles/vdom-as-json.git`
 6. `npm i https://github.com/bloodyKnuckles/to-virtual-dom.git`
