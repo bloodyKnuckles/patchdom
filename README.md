@@ -40,7 +40,7 @@ Testing Virtual-DOM and Web Worker technologies.
   - ln:34, return VText.
   - ln:46, return object with empty attributes object, to minimize diff patch.
   - ln:65, check for HTML node, then remove child nodes before HEAD and text nodes at end.
-  - ln:76, don't throw error, rather wrap in DIV node.
+  - ln:76, don't throw error, rather wrap children in DIV node, this accommodates templates without single root node.
   - ln:88, remove DOCTYPE tag and anything after HTML close tag, for diff purposes.
 
 ### license
