@@ -21,12 +21,12 @@ module.exports = function (tools) {
           vdom,
           {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
         )
+        function onclick (evt) {
+          console.log('clicked')
+          evt.preventDefault()
+          window.worker.postMessage({cmd: 'inc'})
+        }
       })
-      function onclick (evt) {
-        console.log('clicked')
-        evt.preventDefault()
-        window.worker.postMessage({cmd: 'inc'})
-      }
     }
 
     else if ( '/other.html' === state.url ) {

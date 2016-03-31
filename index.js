@@ -17,7 +17,7 @@ window.addEventListener('popstate', function () {
 document.querySelector('button').onclick = (function onclick (evt) {
   console.log('clicked')
   evt.preventDefault()
-  window.worker.postMessage({cmd: 'inc'})
+  window.worker.postMessage({cmd: 'inc', url: '/'})
 })
 
 var rootnode = document.documentElement
