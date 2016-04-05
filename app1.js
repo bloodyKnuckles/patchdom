@@ -17,10 +17,10 @@ router.addRoute("/(index.html)?", function (data, routermatch) {
   if ( 'inc' ===  data.cmd ) {
     state.clicks += 1
   }
-  return {
+  return Promise.resolve({
     templates: '/index.html', // work in array option for layered templates
     content: {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
-  }
+  })
   function onclick (evt) {
     console.log('clicked')
     evt.preventDefault()

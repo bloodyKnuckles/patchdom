@@ -20,10 +20,10 @@ self.addEventListener('message', function (evt) {
 
     default:
       rm = app.match(data.url)
-      var pageinfo = rm.fn(data, rm)
-
-      getTemplate(pageinfo.templates, function (vdom) {
-        render(vdom, pageinfo.content)
+      rm.fn(data, rm).then(function (pageinfo) {
+        getTemplate(pageinfo.templates).then(function (vdom) {
+          render(vdom, pageinfo.content)
+        })
       })
 
   } // end switch
@@ -34,16 +34,32 @@ self.addEventListener('message', function (evt) {
     sitedom = newdom
   }
 
-  function getTemplate (path, cb) {
+  function getTemplate (path) {
     if ( undefined === templates[path] ) {
-      var xhr = new XMLHttpRequest()
-      xhr.onload = function () {
-        cb(htmlToVDOM(templates[path] = this.responseText))
-      }
-      xhr.open('GET', path)
-      xhr.send()
+      return XHR(path).then(function (response) {
+        return htmlToVDOM(templates[path] = response)
+      }, function (error) {
+        console.error('failed XHR', error);
+      })
     }
-    else { cb(templates[path]) }
+    else { return Promise.resolve(templates[path]) }
+  }
+
+  function XHR (url) {
+    return new Promise(function (resolve, reject) {
+      var req = new XMLHttpRequest()
+      req.open('GET', url)
+
+      req.onload = function () {
+        if ( 200 === req.status ) { resolve(req.response) }
+        else { reject(Error(req.statusText)) }
+      }
+
+      req.onerror = function () {
+        reject(Error('network error'))
+      }
+      req.send()
+    })
   }
 
 }, false)
