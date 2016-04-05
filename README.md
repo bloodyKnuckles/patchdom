@@ -21,7 +21,7 @@ Testing Virtual-DOM and Web Worker technologies.
 * Using **Virtual DOMs** and DOM diffing for page updates.
 * Offloading template/data compilation and VDOM diffing to **Web Worker**.
 * Incorporating Promises to accommodate asynch operations, such as XHR calls.
-* Server sends fully functioning page on first request, then SPA takes over.
+* Server sends fully functioning page on initial request, then SPA takes over.
 
 ### demo
 
