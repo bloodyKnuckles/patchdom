@@ -16,9 +16,11 @@ Testing Virtual-DOM and Web Worker technologies.
 3. View wzrd provided url in browser.
 
 ### features
-* Standalone, plain HTML files as templates
-* Curly-brackets-free data binding
-* Offloading template/data compilation and VDOM diffing to **Web Worker**
+* Standalone, plain HTML files as templates.
+* Curly-brackets-free data binding.
+* Using **Virtual DOMs** and DOM diffing for page updates.
+* Offloading template/data compilation and VDOM diffing to **Web Worker**.
+* Incorporating Promises to accommodate asynch operations, such as XHR calls.
 
 ### demo
 
