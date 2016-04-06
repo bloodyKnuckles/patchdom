@@ -1,51 +1,31 @@
+var router = require('routes')()
+
 var state = { 'clicks': 0, 'url': '/' }
 
-module.exports = function (tools) {
 
-  return function (data, callback) {
-    var vdom, content = {}
+router.addRoute('*', function (data, routermatch) {
+  if ( 'url' === data.cmd ) {
+    state.url = data.url
+  }
+  console.log('all routes')
+  var rm = routermatch.next(data)
+  return rm.fn(data, rm)
 
-    if ( 'url' === data.cmd ) {
-      state.url = data.url
-    }
+})
 
-    if ( '/' === state.url
-      || '/index.html' === state.url
-    ) {
+router.addRoute("/(index.html)?", function (data, routermatch) {
+  if ( 'inc' ===  data.cmd ) {
+    state.clicks += 1
+  }
+  return Promise.resolve({
+    templates: '/index.html', // work in array option for layered templates
+    content: {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
+  })
+  function onclick (evt) {
+    console.log('clicked')
+    evt.preventDefault()
+    window.worker.postMessage({cmd: 'inc', url: '/'})
+  }
+})
 
-      if ( 'inc' ===  data.cmd ) {
-        state.clicks += 1
-      }
-      tools.getTemplate('site', '/index.html', function (vdom) {
-        callback(
-          vdom,
-          {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
-        )
-        function onclick (evt) {
-          console.log('clicked')
-          evt.preventDefault()
-          window.worker.postMessage({cmd: 'inc'})
-        }
-      })
-    }
-
-    else if ( '/other.html' === state.url ) {
-      getTemplate('other', '/other.html', function (vdom) {
-        callback(
-          vdom,
-          {'title': 'hey', '#msg': 'there you go'}
-        )
-      })
-    }
-
-    else { // home
-      getTemplate('other', '/other.html', function (vdom) {
-        callback(
-          vdom,
-          {'title': 'home', '#msg': 'home sweet home'}
-        )
-      })
-    }
-
-  } // end return function
-} // end module.exports
+module.exports = router
