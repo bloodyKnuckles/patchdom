@@ -31,7 +31,7 @@ Testing Virtual-DOM and Web Worker technologies.
 
 * Functions don't pass the Web Worker thread barrior. `vdom-as-json` and `vdom-serialized-patch` simply replace the function with an empty object. The response here is to `toString` the function and `eval` it on the other end.
 * Scope is an issue when updating a function in the DOM. Apparently the newly updated function doesn't fall under the same scope the initial function had. The response here is to put what goes out of scope under the `window` scope.
-* HTML Entities used in templates are escaped, and therefore not interpreted as intended, through the Virtual-DOM process.
+* When going through the Virtual-DOM process, HTML Entities used in templates are escaped, and therefore not displayed as intended.
 
 ### library modifications
 
