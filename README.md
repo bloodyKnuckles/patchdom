@@ -35,7 +35,10 @@ Testing Virtual-DOM and Web Worker technologies.
 
 ### library modifications
 
-* `virtual-dom`: `vtree/diff-props.js` ln:20, added function check and comparision excluding whitespace, to minimize diff patch.
+* `virtual-dom`:
+  - `vtree/diff.js` ln:12, added call to npm package `he`.
+  - `vtree/diff.js` ln:66, added `he.decode` to text comparison, in order to skip HTML entities that when decoded are the same.
+  - `vtree/diff-props.js` ln:20, added function check and comparision excluding whitespace, to minimize diff patch.
 * `vdom-as-json`: 
   - `lib/fromJson.js` ln:25, added function as string check and `eval`ing string to return to function.
   - `lib/toJson.js` ln:109, added function check and converting to string type.
