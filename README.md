@@ -49,7 +49,9 @@ Testing Virtual-DOM and Web Worker technologies.
   - ln:65, check for HTML node, then remove child nodes before HEAD and text nodes at end.
   - ln:76, don't throw error, rather wrap children in DIV node, this accommodates templates without single root node.
   - ln:88, remove DOCTYPE tag and anything after HTML close tag, for diff purposes.
-* `shave-template/node_modules/vdom-to-html/index.js`: ln:30, don't escape returned string, messes up HTML entities.
+* `shave-template`:
+  - `/node_modules/vdom-to-html/index.js`: ln:30, don't escape returned string, messes up HTML entities.
+  - `/node_modules/to-virtual-dom/src/index.js`: ln:39-42, remove, don't make URLs absolute (bloodyKnuckles branch).
 
 ### license
 
