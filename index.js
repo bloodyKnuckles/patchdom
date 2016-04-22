@@ -6,12 +6,12 @@ var vdomparser = require('vdom-parser')
 document.body.addEventListener('click', function (evt) {
   if ( 'A' === evt.target.tagName && evt.target.host === window.location.host ) {
     evt.preventDefault()
-    //window.worker.postMessage({cmd: 'url', url: location.pathname})
+    window.worker.postMessage({cmd: 'url', url: evt.target.getAttribute('href')})
   }
 })
 
 window.addEventListener('popstate', function () {
-  //window.worker.postMessage({cmd: 'url', url: location.pathname})
+  window.worker.postMessage({cmd: 'url', url: location.pathname})
 })
 
 document.querySelector('button').onclick = (function onclick (evt) {
@@ -40,7 +40,7 @@ function paint (data) {
     var ret = patch(rootnode, data)
   })
   if ( location.pathname !== data.url ) {
-    //history.pushState(null, null, data.url)
+    history.pushState(null, null, data.url)
   }
 }
 

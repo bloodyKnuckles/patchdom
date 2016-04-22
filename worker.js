@@ -4,6 +4,9 @@ var fromJSON = require('vdom-as-json/fromJson')
 var htmlToVDOM = require('to-virtual-dom')
 var shaved = require('shave-template')
 var XHR = require('xhr-promise-bare')
+//var XHR = require('../../modules/xhr-promise-bare/index.js')
+
+var patchView = require('../../modules/virtual-dom-patch-viewer/index.js')
 
 var templates = {}, sitedom
 
@@ -31,19 +34,29 @@ self.addEventListener('message', function (evt) {
 
   function render (vdom, content) {
     newdom = shaved(vdom, content)
-    self.postMessage({cmd: 'paint', patches: toJSON(diff(sitedom, newdom))})
+    var pp = diff(sitedom, newdom)
+console.log(sitedom)
+console.log(newdom)
+//console.log(pp)
+patchView(pp)
+    self.postMessage({cmd: 'paint', patches: toJSON(pp)})
+    //self.postMessage({cmd: 'paint', patches: toJSON(diff(sitedom, newdom))})
     sitedom = newdom
   }
 
-  function getTemplate (path) {
-    if ( undefined === templates[path] ) {
-      return XHR(path).then(function (response) {
-        return htmlToVDOM(templates[path] = response)
-      }, function (error) {
-        console.error('failed XHR', error);
+  function getTemplate (paths) {
+    if ( 'string' === typeof paths ) {
+      paths = [paths]
+    }
+    var xhrs = paths.map(function (path) {
+      return XHR(path)
+    })
+    if ( undefined === templates[paths.join(',')] ) {
+      return Promise.all(xhrs).then(function (templates) {
+        return shaved(templates)
       })
     }
-    else { return Promise.resolve(templates[path]) }
+    else { return Promise.resolve(templates[paths.join(',')]) }
   }
 
 }, false)

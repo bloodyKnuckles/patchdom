@@ -16,21 +16,21 @@ router.addRoute('*', function (data, routermatch) {
   }) //*/
   .then(JSON.parse)
   .then(function (testJSON) {
-    console.log(testJSON.test)
+    //console.log(testJSON.test)
     if ( 'url' === data.cmd ) {
       state.url = data.url
     }
-    console.log('all routes')
+    console.log('all routes', data)
     var rm = routermatch.next(data)
     return rm.fn(data, rm)
   })
 })
 
-router.addRoute("/(index.html)?", function (data, routermatch) {
+router.addRoute("/(index\.html)?", function (data, routermatch) {
   return XHR('test.json')
   .then(JSON.parse)
   .then(function (testJSON) {
-    console.log(testJSON.test + ' hey')
+    //console.log(testJSON.test + ' hey')
     if ( 'inc' ===  data.cmd ) {
       state.clicks += 1
     }
@@ -43,6 +43,13 @@ router.addRoute("/(index.html)?", function (data, routermatch) {
       evt.preventDefault()
       window.worker.postMessage({cmd: 'inc', url: '/'})
     }
+  })
+})
+
+router.addRoute("/other(\.html)?", function (data, routermatch) {
+  return Promise.resolve({
+    templates: ['/other.html', '/template.html'],
+    content: {'#msg': 'This is the other page message.', '#wat': 'yup'}
   })
 })
 
