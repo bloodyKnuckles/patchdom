@@ -35,8 +35,8 @@ self.addEventListener('message', function (evt) {
   function render (vdom, content) {
     newdom = shaved(vdom, content)
     var pp = diff(sitedom, newdom)
-console.log(sitedom)
-console.log(newdom)
+//console.log(sitedom)
+//console.log(newdom)
 //console.log(pp)
 patchView(pp)
     self.postMessage({cmd: 'paint', patches: toJSON(pp)})

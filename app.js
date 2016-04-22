@@ -35,7 +35,7 @@ router.addRoute("/(index\.html)?", function (data, routermatch) {
       state.clicks += 1
     }
     return Promise.resolve({
-      templates: '/index.html', // work in array option for layered templates
+      templates: ['/site.html', '/home.html'],
       content: {'title': 'yes', '#count': state.clicks, 'button': {onclick: onclick, _html: 'hey'}}
     })
     function onclick (evt) {
@@ -48,7 +48,7 @@ router.addRoute("/(index\.html)?", function (data, routermatch) {
 
 router.addRoute("/other(\.html)?", function (data, routermatch) {
   return Promise.resolve({
-    templates: ['/other.html', '/template.html'],
+    templates: ['/site.html', '/other.html', '/template.html'],
     content: {'#msg': 'This is the other page message.', '#wat': 'yup'}
   })
 })
