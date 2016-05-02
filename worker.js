@@ -6,7 +6,8 @@ var shaved = require('shave-template')
 var XHR = require('xhr-promise-bare')
 //var XHR = require('../../modules/xhr-promise-bare/index.js')
 
-var patchView = require('../../modules/virtual-dom-patch-viewer/index.js')
+var patchView = require('virtual-dom-patch-viewer')
+//var patchView = require('../../modules/virtual-dom-patch-viewer/index.js')
 
 var templates = {}, sitedom
 
