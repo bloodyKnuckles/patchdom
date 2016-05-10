@@ -49,9 +49,7 @@ patchView(pp)
     if ( 'string' === typeof paths ) {
       paths = [paths]
     }
-    var xhrs = paths.map(function (path) {
-      return XHR(path)
-    })
+    var xhrs = paths.map(XHR)
     if ( undefined === templates[paths.join(',')] ) {
       return Promise.all(xhrs).then(function (templates) {
         return shaved(templates)
